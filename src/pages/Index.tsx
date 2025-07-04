@@ -152,25 +152,37 @@ const Index = () => {
                   {" "}Inteligente!
                 </h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-10">
-                  <div className="group relative overflow-hidden bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 text-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="group relative overflow-hidden bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 text-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 border border-white/10">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div className="absolute top-2 right-2 w-12 h-12 rounded-full bg-white/10 group-hover:bg-white/20 transition-all duration-300"></div>
                     <div className="relative z-10 text-center">
-                      <div className="font-bold text-base sm:text-lg lg:text-xl mb-2 leading-tight">facturación electrónica y complementos de pago</div>
-                      <div className="text-xs sm:text-sm bg-white/20 px-3 py-1 rounded-full inline-block backdrop-blur-sm">CFDI 4.0</div>
+                      <div className="mb-3">
+                        <CreditCard className="h-8 w-8 mx-auto text-white/80 group-hover:text-white transition-colors duration-300" />
+                      </div>
+                      <div className="font-bold text-base sm:text-lg lg:text-xl mb-3 leading-tight">facturación electrónica y complementos de pago</div>
+                      <div className="text-xs sm:text-sm bg-white/30 px-4 py-2 rounded-full inline-block backdrop-blur-sm border border-white/20 font-medium">CFDI 4.0</div>
                     </div>
                   </div>
-                  <div className="group relative overflow-hidden bg-gradient-to-br from-gray-600 via-gray-700 to-gray-800 text-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="group relative overflow-hidden bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 text-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 border border-white/10">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div className="absolute top-2 right-2 w-12 h-12 rounded-full bg-white/10 group-hover:bg-white/20 transition-all duration-300"></div>
                     <div className="relative z-10 text-center">
-                      <div className="font-bold text-base sm:text-lg lg:text-xl mb-2 leading-tight">manejo de sucursales</div>
-                      <div className="text-xs sm:text-sm bg-white/20 px-3 py-1 rounded-full inline-block backdrop-blur-sm">Múltiples ubicaciones</div>
+                      <div className="mb-3">
+                        <TrendingUp className="h-8 w-8 mx-auto text-white/80 group-hover:text-white transition-colors duration-300" />
+                      </div>
+                      <div className="font-bold text-base sm:text-lg lg:text-xl mb-3 leading-tight">manejo de sucursales</div>
+                      <div className="text-xs sm:text-sm bg-white/30 px-4 py-2 rounded-full inline-block backdrop-blur-sm border border-white/20 font-medium">Múltiples ubicaciones</div>
                     </div>
                   </div>
-                  <div className="group relative overflow-hidden bg-gradient-to-br from-stone-600 via-stone-700 to-stone-800 text-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 sm:col-span-2 md:col-span-1">
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="group relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 border border-white/10 sm:col-span-2 md:col-span-1">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div className="absolute top-2 right-2 w-12 h-12 rounded-full bg-white/10 group-hover:bg-white/20 transition-all duration-300"></div>
                     <div className="relative z-10 text-center">
-                      <div className="font-bold text-base sm:text-lg lg:text-xl mb-2 leading-tight">terminales android para meseros</div>
-                      <div className="text-xs sm:text-sm bg-white/20 px-3 py-1 rounded-full inline-block backdrop-blur-sm">Mr Móvil</div>
+                      <div className="mb-3">
+                        <Smartphone className="h-8 w-8 mx-auto text-white/80 group-hover:text-white transition-colors duration-300" />
+                      </div>
+                      <div className="font-bold text-base sm:text-lg lg:text-xl mb-3 leading-tight">terminales android para meseros</div>
+                      <div className="text-xs sm:text-sm bg-white/30 px-4 py-2 rounded-full inline-block backdrop-blur-sm border border-white/20 font-medium">Mr Móvil</div>
                     </div>
                   </div>
                 </div>
