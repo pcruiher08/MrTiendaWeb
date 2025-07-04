@@ -159,7 +159,7 @@ const Index = () => {
                       <div className="mb-3">
                         <CreditCard className="h-8 w-8 mx-auto text-white/80 group-hover:text-white transition-colors duration-300" />
                       </div>
-                      <div className="font-bold text-base sm:text-lg lg:text-xl mb-3 leading-tight">facturación electrónica y complementos de pago</div>
+                      <div className="font-bold text-base sm:text-lg lg:text-xl mb-3 leading-tight">Facturación electrónica y complementos de pago</div>
                       <div className="text-xs sm:text-sm bg-white/30 px-4 py-2 rounded-full inline-block backdrop-blur-sm border border-white/20 font-medium">CFDI 4.0</div>
                     </div>
                   </div>
@@ -170,7 +170,7 @@ const Index = () => {
                       <div className="mb-3">
                         <TrendingUp className="h-8 w-8 mx-auto text-white/80 group-hover:text-white transition-colors duration-300" />
                       </div>
-                      <div className="font-bold text-base sm:text-lg lg:text-xl mb-3 leading-tight">manejo de sucursales</div>
+                      <div className="font-bold text-base sm:text-lg lg:text-xl mb-3 leading-tight">Manejo de sucursales</div>
                       <div className="text-xs sm:text-sm bg-white/30 px-4 py-2 rounded-full inline-block backdrop-blur-sm border border-white/20 font-medium">Múltiples ubicaciones</div>
                     </div>
                   </div>
@@ -181,7 +181,7 @@ const Index = () => {
                       <div className="mb-3">
                         <Smartphone className="h-8 w-8 mx-auto text-white/80 group-hover:text-white transition-colors duration-300" />
                       </div>
-                      <div className="font-bold text-base sm:text-lg lg:text-xl mb-3 leading-tight">terminales android para meseros</div>
+                      <div className="font-bold text-base sm:text-lg lg:text-xl mb-3 leading-tight">Terminales android para meseros</div>
                       <div className="text-xs sm:text-sm bg-white/30 px-4 py-2 rounded-full inline-block backdrop-blur-sm border border-white/20 font-medium">Mr Móvil</div>
                     </div>
                   </div>
