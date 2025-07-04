@@ -151,18 +151,27 @@ const Index = () => {
                   </span>
                   {" "}Inteligente!
                 </h1>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mt-6 sm:mt-8">
-                  <div className="bg-gradient-to-r from-slate-600 to-slate-700 text-white p-3 sm:p-4 rounded-lg text-center">
-                    <div className="font-bold text-sm sm:text-base lg:text-lg">facturación electrónica y complementos de pago</div>
-                    <div className="text-xs sm:text-sm">CFDI 4.0</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-10">
+                  <div className="group relative overflow-hidden bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 text-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative z-10 text-center">
+                      <div className="font-bold text-base sm:text-lg lg:text-xl mb-2 leading-tight">facturación electrónica y complementos de pago</div>
+                      <div className="text-xs sm:text-sm bg-white/20 px-3 py-1 rounded-full inline-block backdrop-blur-sm">CFDI 4.0</div>
+                    </div>
                   </div>
-                  <div className="bg-gradient-to-r from-gray-600 to-gray-700 text-white p-3 sm:p-4 rounded-lg text-center">
-                    <div className="font-bold text-sm sm:text-base lg:text-lg">manejo de sucursales</div>
-                    <div className="text-xs sm:text-sm">Múltiples ubicaciones</div>
+                  <div className="group relative overflow-hidden bg-gradient-to-br from-gray-600 via-gray-700 to-gray-800 text-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative z-10 text-center">
+                      <div className="font-bold text-base sm:text-lg lg:text-xl mb-2 leading-tight">manejo de sucursales</div>
+                      <div className="text-xs sm:text-sm bg-white/20 px-3 py-1 rounded-full inline-block backdrop-blur-sm">Múltiples ubicaciones</div>
+                    </div>
                   </div>
-                  <div className="bg-gradient-to-r from-stone-600 to-stone-700 text-white p-3 sm:p-4 rounded-lg text-center">
-                    <div className="font-bold text-sm sm:text-base lg:text-lg">terminales android para meseros</div>
-                    <div className="text-xs sm:text-sm">Mr Móvil</div>
+                  <div className="group relative overflow-hidden bg-gradient-to-br from-stone-600 via-stone-700 to-stone-800 text-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 sm:col-span-2 md:col-span-1">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative z-10 text-center">
+                      <div className="font-bold text-base sm:text-lg lg:text-xl mb-2 leading-tight">terminales android para meseros</div>
+                      <div className="text-xs sm:text-sm bg-white/20 px-3 py-1 rounded-full inline-block backdrop-blur-sm">Mr Móvil</div>
+                    </div>
                   </div>
                 </div>
               </div>
