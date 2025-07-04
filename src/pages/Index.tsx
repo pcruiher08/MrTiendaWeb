@@ -44,11 +44,6 @@ const Index = () => {
       description: "Facturación electrónica totalmente actualizada y legal"
     },
     {
-      icon: <CreditCard className="h-8 w-8 text-slate-700" />,
-      title: "Complementos de Pago 2.0",
-      description: "Sistema de pagos actualizado con las últimas normativas"
-    },
-    {
       icon: <Smartphone className="h-8 w-8 text-slate-700" />,
       title: "Mr Móvil",
       description: "Aplicación móvil para gestionar tu negocio desde cualquier lugar"
@@ -158,16 +153,16 @@ const Index = () => {
                 </h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mt-6 sm:mt-8">
                   <div className="bg-gradient-to-r from-slate-600 to-slate-700 text-white p-3 sm:p-4 rounded-lg text-center">
-                    <div className="font-bold text-sm sm:text-base lg:text-lg">Facturación Electrónica</div>
+                    <div className="font-bold text-sm sm:text-base lg:text-lg">facturación electrónica y complementos de pago</div>
                     <div className="text-xs sm:text-sm">CFDI 4.0</div>
                   </div>
                   <div className="bg-gradient-to-r from-gray-600 to-gray-700 text-white p-3 sm:p-4 rounded-lg text-center">
-                    <div className="font-bold text-sm sm:text-base lg:text-lg">Complementos de Pago</div>
-                    <div className="text-xs sm:text-sm">2.0</div>
+                    <div className="font-bold text-sm sm:text-base lg:text-lg">manejo de sucursales</div>
+                    <div className="text-xs sm:text-sm">Múltiples ubicaciones</div>
                   </div>
                   <div className="bg-gradient-to-r from-stone-600 to-stone-700 text-white p-3 sm:p-4 rounded-lg text-center">
-                    <div className="font-bold text-sm sm:text-base lg:text-lg">Carta Porte</div>
-                    <div className="text-xs sm:text-sm">Actualizado</div>
+                    <div className="font-bold text-sm sm:text-base lg:text-lg">terminales android para meseros</div>
+                    <div className="text-xs sm:text-sm">Mr Móvil</div>
                   </div>
                 </div>
               </div>
