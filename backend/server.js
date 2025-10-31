@@ -6,12 +6,26 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// If frontend build exists, serve it as static files (enables single App Service deployment)
+const frontDist = path.join(__dirname, '..', 'dist');
+if (fs.existsSync(frontDist)) {
+  app.use(express.static(frontDist));
+
+  // Ensure API and uploads routes are not overridden
+  app.get('*', (req, res) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+      return res.status(404).end();
+    }
+    res.sendFile(path.join(frontDist, 'index.html'));
+  });
+}
 
 // Create uploads directory if it doesn't exist
 const uploadsDir = path.join(__dirname, 'uploads');
