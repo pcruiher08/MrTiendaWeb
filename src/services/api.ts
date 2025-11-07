@@ -1,4 +1,7 @@
-const API_BASE_URL = 'http://localhost:3001/api';
+// Use a relative API base so the frontend talks to the same host it was served from.
+// This avoids hardcoding localhost in production (which causes ERR_CONNECTION_REFUSED
+// when the site is served from a remote host).
+const API_BASE_URL = '/api';
 
 export interface Distributor {
   id: number;
