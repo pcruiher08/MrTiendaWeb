@@ -76,6 +76,7 @@ const Distribuidores = () => {
 
   const handleAddDistributor = async () => {
     if (!newDistributor.name || !newDistributor.city || !newDistributor.contact || !newDistributor.phone || !newDistributor.email) {
+      setError('Por favor complete los campos requeridos antes de enviar.');
       return;
     }
 
@@ -90,7 +91,8 @@ const Distribuidores = () => {
       };
 
       const newItem = await apiService.createDistributor(distributorData, selectedLogo || undefined);
-      setDistributors([...distributors, newItem]);
+      // Refresh list from server so ordering/positions are consistent
+      await loadDistributors();
       setIsAddDialogOpen(false);
       resetForm();
     } catch (err) {
@@ -114,6 +116,7 @@ const Distribuidores = () => {
 
   const handleUpdateDistributor = async () => {
     if (!editingItem || !newDistributor.name || !newDistributor.city || !newDistributor.contact || !newDistributor.phone || !newDistributor.email) {
+      setError('Por favor complete los campos requeridos antes de actualizar.');
       return;
     }
 
@@ -128,7 +131,8 @@ const Distribuidores = () => {
       };
 
       const updatedItem = await apiService.updateDistributor(editingItem.id, distributorData, selectedLogo || undefined);
-      setDistributors(distributors.map(d => d.id === editingItem.id ? updatedItem : d));
+      // Refresh list from server so any position changes are reflected
+      await loadDistributors();
       setEditingItem(null);
       resetForm();
     } catch (err) {
@@ -190,7 +194,9 @@ const Distribuidores = () => {
       setDistributors(reorderedDistributors);
       
       // Send reorder request to backend
-      await apiService.reorderDistributors(newOrder);
+  await apiService.reorderDistributors(newOrder);
+  // Re-fetch from server to ensure positions are the source of truth
+  await loadDistributors();
       
     } catch (err) {
       // Revert on error
@@ -407,7 +413,9 @@ const Distribuidores = () => {
                   {distributor.logo && (
                     <div className="flex justify-center mb-4">
                       <img
-                        src={`http://localhost:3001${distributor.logo}`}
+                        // Use relative URL so images are requested from the same origin
+                        // the app is served from (works locally and when deployed).
+                        src={distributor.logo?.startsWith('http') ? distributor.logo : distributor.logo}
                         alt={`${distributor.name} logo`}
                         className="h-16 w-auto object-contain"
                         onError={(e) => {

@@ -191,7 +191,8 @@ app.get('/api/test', (req, res) => {
 // GET all distributors
 app.get('/api/distributors', (req, res) => {
   console.log('GET distributors called');
-  db.all('SELECT * FROM distributors ORDER BY id ASC', [], (err, rows) => {
+  // Return distributors ordered by their position so client reordering persists
+  db.all('SELECT * FROM distributors ORDER BY position ASC', [], (err, rows) => {
     if (err) {
       console.error('Database error:', err);
       res.status(500).json({ error: err.message });
