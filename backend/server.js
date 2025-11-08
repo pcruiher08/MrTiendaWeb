@@ -12,7 +12,8 @@ const PORT = 3001;
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use(express.static(path.join(__dirname, 'dist')));
+// Serve static files but do not automatically serve index.html so we can inject diagnostics into the page
+app.use(express.static(path.join(__dirname, 'dist'), { index: false }));
 
 // Create uploads directory if it doesn't exist
 const uploadsDir = path.join(__dirname, 'uploads');
