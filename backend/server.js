@@ -71,7 +71,9 @@ function createTables() {
       email TEXT NOT NULL,
       experience TEXT,
       logo TEXT,
-      position INTEGER DEFAULT 0
+      position INTEGER DEFAULT 0,
+      latitude REAL,
+      longitude REAL
     )
   `, (err) => {
     if (err) {
@@ -81,7 +83,12 @@ function createTables() {
       // Add position column if it doesn't exist (for existing databases)
       db.run(`ALTER TABLE distributors ADD COLUMN position INTEGER DEFAULT 0`, (alterErr) => {
         // Ignore error if column already exists
-        initializeData();
+        // Try adding latitude/longitude columns as well; ignore errors if they already exist
+        db.run(`ALTER TABLE distributors ADD COLUMN latitude REAL`, () => {
+          db.run(`ALTER TABLE distributors ADD COLUMN longitude REAL`, () => {
+            initializeData();
+          });
+        });
       });
     }
   });
@@ -240,7 +247,7 @@ app.post('/api/distributors', upload.single('logo'), (req, res) => {
     db.run(`
       INSERT INTO distributors (name, city, contact, phone, email, experience, logo, position)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `, [name, city, contact, phone, email, experience || 'Nuevo', logo, nextPosition], function(err) {
+    `, [name, city, contact, phone, email, experience || '', logo, nextPosition], function(err) {
       if (err) {
         res.status(500).json({ error: err.message });
         return;
@@ -323,7 +330,7 @@ app.put('/api/distributors/:id', upload.single('logo'), (req, res) => {
       UPDATE distributors
       SET name = ?, city = ?, contact = ?, phone = ?, email = ?, experience = ?, logo = ?
       WHERE id = ?
-    `, [name, city, contact, phone, email, experience, logo, id], function(err) {
+    `, [name, city, contact, phone, email, experience || '', logo, id], function(err) {
       if (err) {
         res.status(500).json({ error: err.message });
         return;
@@ -420,7 +427,18 @@ app.use((req, res, next) => {
   if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
     return next();
   }
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  // Serve index.html but inject a small diagnostics script to surface client-side errors
+  const indexPath = path.join(__dirname, 'dist', 'index.html');
+  try {
+    const html = fs.readFileSync(indexPath, 'utf8');
+    const diag = `\n<script>\nwindow.addEventListener('error', function(e){ try { document.body.innerHTML = '<pre style="white-space:pre-wrap;font-family:monospace;color:#900;padding:12px;">JS Error: '+(e.message||e)+'\\n'+(e.filename||'')+':'+(e.lineno||'')+':'+(e.colno||'')+'</pre>'; } catch (ex){} });\nwindow.addEventListener('unhandledrejection', function(ev){ try { var r = ev.reason; var text = r && (r.stack||r.message) || String(r); document.body.innerHTML = '<pre style="white-space:pre-wrap;font-family:monospace;color:#900;padding:12px;">UnhandledRejection: '+ text +'</pre>'; } catch(ex){} });\n</script>\n`;
+    const out = html.replace('</body>', diag + '</body>');
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    return res.send(out);
+  } catch (err) {
+    // fallback to default sendFile if anything goes wrong
+    return res.sendFile(indexPath);
+  }
 });
 
 // Error handling middleware
