@@ -1,0 +1,1 @@
+IMAGE=mrtiendacr.azurecr.io/mrtienda-web:v9-8195ab4787bf413983db8508e06bda2d71fe8191

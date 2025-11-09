@@ -12,6 +12,9 @@ export interface Distributor {
   email: string;
   experience: string;
   logo?: string;
+  // backend may provide coordinates
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 export interface CreateDistributorData {
