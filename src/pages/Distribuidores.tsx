@@ -13,7 +13,7 @@ import { apiService, type Distributor } from "@/services/api";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import DistributorMap, { type DistributorLite } from '../components/DistributorMap';
+import DistributorMap, { type DistributorLite } from '@/components/DistributorMap';
 
 const Distribuidores = () => {
   const { isAuthenticated, isAdmin } = useAuth();
