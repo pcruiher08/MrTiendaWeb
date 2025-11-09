@@ -1,0 +1,100 @@
+name: CI Deploy to Azure Container App
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: mrtienda-web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Copy build into backend
+        run: |
+          mkdir -p backend/dist
+          cp -R dist/* backend/dist/
+
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Login to ACR
+        run: az acr login --name ${{ secrets.ACR_NAME }}
+
+      - name: Set up QEMU and buildx
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push image (linux/amd64)
+        env:
+          REGISTRY: ${{ secrets.ACR_LOGIN_SERVER }}
+          IMAGE: ${{ env.IMAGE_NAME }}
+          TAG: v${{ github.run_number }}-${{ github.sha }}
+        run: |
+          docker buildx inspect --bootstrap
+          docker buildx build --platform linux/amd64 \
+            -t $REGISTRY/$IMAGE:$TAG \
+            -t $REGISTRY/$IMAGE:latest \
+            --push -f Dockerfile.deploy .
+
+      - name: Update Azure Container App
+        env:
+          REGISTRY: ${{ secrets.ACR_LOGIN_SERVER }}
+          IMAGE: ${{ env.IMAGE_NAME }}
+          TAG: v${{ github.run_number }}-${{ github.sha }}
+        run: |
+          az containerapp update \
+            --name ${{ secrets.CONTAINER_APP_NAME }} \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --image $REGISTRY/$IMAGE:$TAG
+
+      - name: Wait for revision healthy
+        run: |
+          set -e
+          RG=${{ secrets.RESOURCE_GROUP }}
+          APP=${{ secrets.CONTAINER_APP_NAME }}
+          for i in {1..30}; do
+            READY=$(az containerapp revision list --name "$APP" --resource-group "$RG" -o json | jq -r '.[0].properties.healthState')
+            echo "revision health: $READY"
+            if [ "$READY" = "Healthy" ] || [ "$READY" = "RunningAtMaxScale" ]; then
+              echo "Revision healthy"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Revision not healthy after wait" >&2
+          exit 1
+
+      - name: Install test deps & run headless check
+        run: |
+          npm ci
+          node --version
+          node scripts/headless-check-extended.cjs "https://${{ secrets.APEX_DOMAIN }}/distribuidores" > headless-output.json || true
+
+      - name: Upload headless output
+        uses: actions/upload-artifact@v4
+        with:
+          name: headless-check
+          path: headless-output.json
