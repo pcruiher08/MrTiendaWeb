@@ -1,0 +1,21 @@
+# Lightweight deploy Dockerfile that copies a prebuilt frontend `dist/` into the image
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install backend deps
+COPY backend/package*.json ./
+RUN npm install --production
+
+# Copy backend sources
+COPY backend/ ./
+
+# Copy prebuilt frontend assets from backend/dist (we previously copied build into backend/dist)
+# This avoids rebuilding the frontend inside the image.
+COPY backend/dist ./dist
+
+# Ensure uploads dir exists
+RUN mkdir -p uploads
+
+EXPOSE 3001
+CMD ["npm", "start"]
