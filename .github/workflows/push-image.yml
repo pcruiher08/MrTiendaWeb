@@ -60,7 +60,7 @@ jobs:
             --push -f Dockerfile.deploy .
 
       - name: Output image tag
-        run: echo "IMAGE=$REGISTRY/$IMAGE:$TAG" > image-tag.txt
+        run: echo "IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}" > image-tag.txt
 
       - name: Upload image-tag
         uses: actions/upload-artifact@v4
