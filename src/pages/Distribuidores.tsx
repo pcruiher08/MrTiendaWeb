@@ -13,6 +13,7 @@ import { apiService, type Distributor } from "@/services/api";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import DistributorMap, { type DistributorLite } from '../components/DistributorMap';
 
 const Distribuidores = () => {
   const { isAuthenticated, isAdmin } = useAuth();
@@ -33,6 +34,15 @@ const Distribuidores = () => {
 
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [searchInput, setSearchInput] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  // debounce searchInput -> searchTerm
+  useEffect(() => {
+    const t = setTimeout(() => setSearchTerm(searchInput), 300);
+    return () => clearTimeout(t);
+  }, [searchInput]);
+  // Open the map by default so users see distributor locations immediately
+  const [mapOpen, setMapOpen] = useState(true);
 
   // Drag and drop state
   const [draggedItem, setDraggedItem] = useState<Distributor | null>(null);
@@ -87,7 +97,8 @@ const Distribuidores = () => {
         contact: newDistributor.contact,
         phone: newDistributor.phone,
         email: newDistributor.email,
-        experience: newDistributor.experience || 'Nuevo'
+        // send empty string when experience not provided
+        experience: newDistributor.experience || ''
       };
 
       const newItem = await apiService.createDistributor(distributorData, selectedLogo || undefined);
@@ -211,6 +222,18 @@ const Distribuidores = () => {
   const handleDragEnd = () => {
     setDraggedItem(null);
   };
+
+  // compute visible distributors filtered by search term
+  const q = searchTerm.trim().toLowerCase();
+  const visibleDistributors = q
+    ? distributors.filter(d => (
+        (d.name || '').toLowerCase().includes(q) ||
+        (d.city || '').toLowerCase().includes(q) ||
+        (d.contact || '').toLowerCase().includes(q) ||
+        (d.phone || '').toLowerCase().includes(q) ||
+        (d.email || '').toLowerCase().includes(q)
+      ))
+    : distributors;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
@@ -374,6 +397,33 @@ const Distribuidores = () => {
             </p>
           </div>
 
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto mb-8 flex gap-2 items-center">
+            <div className="flex-1">
+              <Label htmlFor="search">Buscar distribuidor</Label>
+              <Input
+                id="search"
+                placeholder="Buscar por nombre, ciudad, contacto, teléfono o email..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+              />
+            </div>
+            <div className="flex items-end gap-2">
+              <Button variant="outline" size="sm" onClick={() => { setSearchInput(''); setSearchTerm(''); }}>
+                Limpiar
+              </Button>
+              <Button size="sm" onClick={() => setMapOpen(v => !v)}>
+                {mapOpen ? 'Ocultar Mapa' : 'Mostrar Mapa'}
+              </Button>
+            </div>
+          </div>
+
+          {mapOpen && (
+            <div className="mb-8">
+              <DistributorMap distributors={visibleDistributors.map(d => ({ id: d.id, name: d.name, city: d.city, contact: d.contact, phone: d.phone, email: d.email, logo: d.logo, latitude: (d as any).latitude, longitude: (d as any).longitude }))} />
+            </div>
+          )}
+
           {/* Error Display */}
           {error && (
             <div className="mb-8">
@@ -392,93 +442,93 @@ const Distribuidores = () => {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {distributors.map((distributor) => (
-              <Card 
-                key={distributor.id} 
-                className={`hover:shadow-lg transition-shadow duration-300 ${
-                  draggedItem?.id === distributor.id ? 'opacity-50' : ''
-                } ${isReordering ? 'pointer-events-none' : ''}`}
-                draggable={isAuthenticated && isAdmin}
-                onDragStart={(e) => handleDragStart(e, distributor)}
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, distributor)}
-                onDragEnd={handleDragEnd}
-              >
-                <CardHeader className="text-center">
-                  {isAuthenticated && isAdmin && (
-                    <div className="flex justify-center mb-2">
-                      <GripVertical className="h-5 w-5 text-gray-400 cursor-move" />
+              {visibleDistributors.map((distributor) => (
+                <Card
+                  key={distributor.id}
+                  className={`hover:shadow-lg transition-shadow duration-300 ${
+                    draggedItem?.id === distributor.id ? 'opacity-50' : ''
+                  } ${isReordering ? 'pointer-events-none' : ''}`}
+                  draggable={isAuthenticated && isAdmin}
+                  onDragStart={(e) => handleDragStart(e, distributor)}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, distributor)}
+                  onDragEnd={handleDragEnd}
+                >
+                  <CardHeader className="text-center">
+                    {isAuthenticated && isAdmin && (
+                      <div className="flex justify-center mb-2">
+                        <GripVertical className="h-5 w-5 text-gray-400 cursor-move" />
+                      </div>
+                    )}
+                    {distributor.logo && (
+                      <div className="flex justify-center mb-4">
+                        <img
+                          src={distributor.logo?.startsWith('http') ? distributor.logo : distributor.logo}
+                          alt={`${distributor.name} logo`}
+                          className="h-16 w-auto object-contain"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    )}
+                    <CardTitle className="text-xl font-bold text-gray-900">
+                      {distributor.name}
+                    </CardTitle>
+                    <CardDescription className="flex items-center justify-center gap-2 text-gray-600">
+                      <MapPin className="h-4 w-4" />
+                      {distributor.city}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 text-sm">
+                        <Users className="h-4 w-4 text-slate-600" />
+                        <span className="font-medium">{distributor.contact}</span>
+                      </div>
+                      <div className="flex items-center gap-3 text-sm">
+                        <Phone className="h-4 w-4 text-slate-600" />
+                        <span>{distributor.phone}</span>
+                      </div>
+                      <div className="flex items-center gap-3 text-sm">
+                        <Mail className="h-4 w-4 text-slate-600" />
+                        <span>{distributor.email}</span>
+                      </div>
+                      {distributor.experience ? (
+                        <div className="flex items-center gap-3 text-sm">
+                          <Award className="h-4 w-4 text-slate-600" />
+                          <span>{distributor.experience} de experiencia</span>
+                        </div>
+                      ) : null}
                     </div>
-                  )}
-                  {distributor.logo && (
-                    <div className="flex justify-center mb-4">
-                      <img
-                        // Use relative URL so images are requested from the same origin
-                        // the app is served from (works locally and when deployed).
-                        src={distributor.logo?.startsWith('http') ? distributor.logo : distributor.logo}
-                        alt={`${distributor.name} logo`}
-                        className="h-16 w-auto object-contain"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                        }}
-                      />
-                    </div>
-                  )}
-                  <CardTitle className="text-xl font-bold text-gray-900">
-                    {distributor.name}
-                  </CardTitle>
-                  <CardDescription className="flex items-center justify-center gap-2 text-gray-600">
-                    <MapPin className="h-4 w-4" />
-                    {distributor.city}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3 text-sm">
-                      <Users className="h-4 w-4 text-slate-600" />
-                      <span className="font-medium">{distributor.contact}</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-sm">
-                      <Phone className="h-4 w-4 text-slate-600" />
-                      <span>{distributor.phone}</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-sm">
-                      <Mail className="h-4 w-4 text-slate-600" />
-                      <span>{distributor.email}</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-sm">
-                      <Award className="h-4 w-4 text-slate-600" />
-                      <span>{distributor.experience} de experiencia</span>
-                    </div>
-                  </div>
 
-                  {/* Admin Actions */}
-                  {isAuthenticated && isAdmin && (
-                    <div className="flex gap-2 pt-4 border-t">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEditDistributor(distributor)}
-                        className="flex-1"
-                      >
-                        <Edit className="h-3 w-3 mr-1" />
-                        Editar
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleDeleteDistributor(distributor.id)}
-                        className="flex-1"
-                      >
-                        <Trash2 className="h-3 w-3 mr-1" />
-                        Eliminar
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    {/* Admin Actions */}
+                    {isAuthenticated && isAdmin && (
+                      <div className="flex gap-2 pt-4 border-t">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEditDistributor(distributor)}
+                          className="flex-1"
+                        >
+                          <Edit className="h-3 w-3 mr-1" />
+                          Editar
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDeleteDistributor(distributor.id)}
+                          className="flex-1"
+                        >
+                          <Trash2 className="h-3 w-3 mr-1" />
+                          Eliminar
+                        </Button>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           )}
 
           {/* Reordering indicator */}
